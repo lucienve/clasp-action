@@ -1,143 +1,142 @@
 # Clasp Action
 
-This action uses [clasp](https://github.com/google/clasp) to push or deploy to [Google Apps Script](https://developers.google.com/apps-script/). This action is running `clasp push -f` regardless of whether you select `push` or `deploy` as the command. This will force the remote manifest to be overwritten.
+This GitHub Action uses Google's [`clasp`](https://github.com/google/clasp)
+(Command Line Apps Script Projects) to push, pull, or deploy code to
+[Google Apps Script](https://developers.google.com/apps-script/).
+
+## Authentication Setup
+
+To authenticate this action with Google, you need to generate a refresh token,
+client ID, and client secret. For a step-by-step walkthrough, see:
+
+- [Setting Up Google Authentication Credentials](./docs/setup-credentials.md)
 
 ## Inputs
 
-### `accessToken`
-
-**Required** `access_token` written in `.clasprc.json`.
-
-### `idToken`
-
-**Required** `id_token` written in `.clasprc.json`.
-
 ### `refreshToken`
 
-**Required** `refresh_token` written in `.clasprc.json`.
+**Required** The OAuth2 `refresh_token` written in `.clasprc.json`.
 
 ### `clientId`
 
-**Required** `clientId` written in `.clasprc.json`.
+**Required** The `clientId` written in `.clasprc.json`.
 
 ### `clientSecret`
 
-**Required** `clientSecret` written in `.clasprc.json`.
+**Required** The `clientSecret` written in `.clasprc.json`.
 
 ### `scriptId`
 
-**Required** `scriptId` written in `.clasp.json`.
+**Required** The Apps Script `scriptId` written in `.clasp.json`.
 
 ### `rootDir`
 
-Directory where scripts are stored.
+Optional directory where scripts are stored. If configured, `.clasp.json`
+settings from the project root are inherited into `rootDir` during execution and
+cleaned up on exit.
 
 ### `command`
 
-**Required** Command to execute(`push` or `deploy`).
+**Required** Command to execute (`push`, `pull`, or `deploy`).
 
-If `deploy` is selected, this action is running `clasp push -f` just before.
+If `deploy` is selected, this action automatically runs `clasp push -f`
+immediately before deploying.
 
-Deploy works for max. 20 deployments due to Gas limit on active deployments and complexity to determine which deployment should be deleted.
-Workaround : Set deployId.
+Deploy works for up to 20 active deployments due to Google Apps Script limits.
+To update an existing deployment instead of creating a new one, set `deployId`.
+
+> [!NOTE] **Note on File Deletions**: On `clasp push`, clasp replaces the remote
+> project files with your local tracked files. However, clasp only triggers a
+> push if local file changes are detected; if a commit only deletes local files
+> without modifying any remaining tracked files, clasp reports that the script
+> is already up to date. To ensure remote deletions synchronize, modify or touch
+> an existing script file in the same commit.
 
 ### `description`
 
-Description of the deployment.
+Optional description for the deployment.
 
 ### `deployId`
 
-Deploy ID that will be updated with this push.
+Optional deployment ID to redeploy or update.
 
-## Example usage
+## Example Usage
 
-### Case to push
+### Push Code
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: daikikatsuragawa/clasp-action@v2.0.0
   with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
     refreshToken: ${{ secrets.REFRESH_TOKEN }}
     clientId: ${{ secrets.CLIENT_ID }}
     clientSecret: ${{ secrets.CLIENT_SECRET }}
     scriptId: ${{ secrets.SCRIPT_ID }}
-    command: 'push'
+    command: "push"
 ```
 
-### Case to pull
+### Pull Code
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: daikikatsuragawa/clasp-action@v2.0.0
   with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
     refreshToken: ${{ secrets.REFRESH_TOKEN }}
     clientId: ${{ secrets.CLIENT_ID }}
     clientSecret: ${{ secrets.CLIENT_SECRET }}
     scriptId: ${{ secrets.SCRIPT_ID }}
-    command: 'pull'
+    command: "pull"
 ```
 
-### Case to deploy
+### Deploy Code
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: daikikatsuragawa/clasp-action@v2.0.0
   with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
     refreshToken: ${{ secrets.REFRESH_TOKEN }}
     clientId: ${{ secrets.CLIENT_ID }}
     clientSecret: ${{ secrets.CLIENT_SECRET }}
     scriptId: ${{ secrets.SCRIPT_ID }}
-    command: 'deploy'
+    command: "deploy"
 ```
 
-### Case to deploy with description
+### Deploy with Description
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: daikikatsuragawa/clasp-action@v2.0.0
   with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
     refreshToken: ${{ secrets.REFRESH_TOKEN }}
     clientId: ${{ secrets.CLIENT_ID }}
     clientSecret: ${{ secrets.CLIENT_SECRET }}
     scriptId: ${{ secrets.SCRIPT_ID }}
-    command: 'deploy'
-    description: 'Sample description'
+    command: "deploy"
+    description: "Release v2.0.0"
 ```
 
-### Case to specify the directory where scripts are stored
+### Custom Source Directory (`rootDir`)
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: daikikatsuragawa/clasp-action@v2.0.0
   with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
-    refreshToken: ${{ secrets.REFRESH_TOKEN }}
-    clientId: ${{ secrets.CLIENT_ID }}     
-    clientSecret: ${{ secrets.CLIENT_SECRET }}
-    scriptId: ${{ secrets.SCRIPT_ID }}
-    rootDir: 'src'
-    command: 'push'
-```
-
-### Case to update a specific deploy
-
-```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
-  with:
-    accessToken: ${{ secrets.ACCESS_TOKEN }}
-    idToken: ${{ secrets.ID_TOKEN }}
     refreshToken: ${{ secrets.REFRESH_TOKEN }}
     clientId: ${{ secrets.CLIENT_ID }}
     clientSecret: ${{ secrets.CLIENT_SECRET }}
     scriptId: ${{ secrets.SCRIPT_ID }}
-    command: 'deploy'
+    rootDir: "src"
+    command: "push"
+```
+
+### Update a Specific Deployment
+
+```yaml
+- uses: daikikatsuragawa/clasp-action@v2.0.0
+  with:
+    refreshToken: ${{ secrets.REFRESH_TOKEN }}
+    clientId: ${{ secrets.CLIENT_ID }}
+    clientSecret: ${{ secrets.CLIENT_SECRET }}
+    scriptId: ${{ secrets.SCRIPT_ID }}
+    command: "deploy"
     deployId: ${{ secrets.DEPLOY_ID }}
 ```
 
-## License summary
+## License Summary
 
 This code is made available under the MIT license.
