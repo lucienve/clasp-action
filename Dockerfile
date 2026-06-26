@@ -2,7 +2,11 @@ FROM node:20-alpine
 
 RUN apk add --no-cache jq
 
-RUN npm install -g @google/clasp@2.4.2
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+ENV PATH="/app/node_modules/.bin:${PATH}"
 
 COPY entrypoint.sh /entrypoint.sh
 
