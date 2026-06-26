@@ -37,14 +37,3 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.accessToken }}
-    - ${{ inputs.idToken }}
-    - ${{ inputs.refreshToken }}
-    - ${{ inputs.clientId }}
-    - ${{ inputs.clientSecret }}
-    - ${{ inputs.scriptId }}
-    - ${{ inputs.rootDir }}
-    - ${{ inputs.command }}
-    - ${{ inputs.description }}
-    - ${{ inputs.deployId }}
