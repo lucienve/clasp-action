@@ -54,7 +54,7 @@ Deploy ID that will be updated with this push.
 ### Case to push
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
@@ -68,7 +68,7 @@ Deploy ID that will be updated with this push.
 ### Case to pull
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
@@ -82,7 +82,7 @@ Deploy ID that will be updated with this push.
 ### Case to deploy
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
@@ -96,7 +96,7 @@ Deploy ID that will be updated with this push.
 ### Case to deploy with description
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
@@ -111,7 +111,7 @@ Deploy ID that will be updated with this push.
 ### Case to specify the directory where scripts are stored
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
@@ -126,7 +126,7 @@ Deploy ID that will be updated with this push.
 ### Case to update a specific deploy
 
 ```yaml
-- uses: daikikatsuragawa/clasp-action@v1.1.0
+- uses: lucienve/clasp-action@v1
   with:
     accessToken: ${{ secrets.ACCESS_TOKEN }}
     idToken: ${{ secrets.ID_TOKEN }}
