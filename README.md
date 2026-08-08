@@ -2,6 +2,12 @@
 
 This action uses [clasp](https://github.com/google/clasp) to push or deploy to [Google Apps Script](https://developers.google.com/apps-script/). This action is running `clasp push -f` regardless of whether you select `push` or `deploy` as the command. This will force the remote manifest to be overwritten.
 
+## Authentication Setup
+
+To authenticate this action with Google, you need to generate several tokens and client secrets. For a step-by-step walkthrough on how to obtain these values, see:
+
+* [Setting Up Google Authentication Credentials](docs/setup-credentials.md)
+
 ## Inputs
 
 ### `accessToken`
