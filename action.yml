@@ -1,4 +1,4 @@
-name: 'Clasp Action'
+name: 'Google Apps Script Clasp Action'
 description: 'Push or deploy to Google Apps Script using clasp'
 branding:
   icon: 'arrow-up-circle'

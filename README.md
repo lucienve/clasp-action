@@ -1,10 +1,21 @@
-# Clasp Action
+# Google Apps Script Clasp Action
 
-This action uses [clasp](https://github.com/google/clasp) to push or deploy to [Google Apps Script](https://developers.google.com/apps-script/). This action is running `clasp push -f` regardless of whether you select `push` or `deploy` as the command. This will force the remote manifest to be overwritten.
+> [!NOTE]
+> **Actively Maintained Fork**: This repository is an actively maintained fork of [`daikikatsuragawa/clasp-action`](https://github.com/daikikatsuragawa/clasp-action). It includes essential security fixes, performance enhancements, modernized dependencies, and updated documentation.
+
+This GitHub Action uses Google's [`clasp`](https://github.com/google/clasp) (Command Line Apps Script Projects) to push, pull, or deploy code to [Google Apps Script](https://developers.google.com/apps-script/).
+
+## Improvements in this Fork
+
+* **Enhanced Secret Security**: Inputs and tokens are read directly from environment variables rather than command-line flags, preventing credential exposure in runner process tables (`ps aux`).
+* **Non-Destructive Config Merging**: Uses `jq` to non-destructively merge configuration into `.clasp.json`, preserving custom properties like `rootDir` and `projectId`.
+* **Fail-Fast Error Handling**: Employs `set -e` in execution scripts so runtime errors immediately propagate and fail the GitHub Action job accurately.
+* **Modernized Dependencies**: Updated to `@google/clasp@3.4.0` running on `node:26-alpine`, backed by automated Dependabot security updates.
+* **Credential Setup Guide**: Includes a step-by-step [Google Authentication Setup Guide](docs/setup-credentials.md).
 
 ## Authentication Setup
 
-To authenticate this action with Google, you need to generate several tokens and client secrets. For a step-by-step walkthrough on how to obtain these values, see:
+To authenticate this action with Google, you need to generate tokens and client secrets. For a step-by-step walkthrough on how to obtain these values, see:
 
 * [Setting Up Google Authentication Credentials](docs/setup-credentials.md)
 
