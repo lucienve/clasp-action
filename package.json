@@ -4,6 +4,6 @@
   "description": "Push or deploy to Google Apps Script using clasp",
   "private": true,
   "dependencies": {
-    "@google/clasp": "3.4.0"
+    "@google/clasp": "3.4.1"
   }
 }
