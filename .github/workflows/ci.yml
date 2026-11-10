@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint & Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Check shell script with ShellCheck
+        run: shellcheck entrypoint.sh
+
+      - name: Check Markdown formatting with Prettier
+        run: npx --yes prettier --check "**/*.md"
+
+      - name: Lint Markdown with markdownlint-cli
+        run: npx --yes markdownlint-cli "**/*.md"
+
+  test:
+    name: Build & Smoke Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t clasp-action:test .
+
+      - name: Verify missing inputs fail fast
+        run: |
+          if docker run --rm clasp-action:test; then
+            echo "Expected failure on missing inputs, but succeeded." >&2
+            exit 1
+          fi
+
+      - name: Verify invalid command fails fast
+        run: |
+          if docker run --rm \
+            -e INPUT_REFRESHTOKEN=fake \
+            -e INPUT_CLIENTID=fake \
+            -e INPUT_CLIENTSECRET=fake \
+            -e INPUT_SCRIPTID=fake \
+            -e INPUT_COMMAND=invalid \
+            clasp-action:test; then
+            echo "Expected failure on invalid command, but succeeded." >&2
+            exit 1
+          fi
+
+      - name: Verify credential and config cleanup on exit
+        run: |
+          docker run --rm --entrypoint /bin/sh \
+            -e INPUT_REFRESHTOKEN=fake \
+            -e INPUT_CLIENTID=fake \
+            -e INPUT_CLIENTSECRET=fake \
+            -e INPUT_SCRIPTID=fake \
+            -e INPUT_COMMAND=pull \
+            clasp-action:test -c '
+              /entrypoint.sh || true
+              if [ -f ~/.clasprc.json ] || [ -f .clasp.json ]; then
+                echo "Leaked credential or config files." >&2
+                exit 1
+              fi
+            '
+
+      - name: Verify existing .clasp.json restoration on exit
+        run: |
+          docker run --rm --entrypoint /bin/sh \
+            -e INPUT_REFRESHTOKEN=fake \
+            -e INPUT_CLIENTID=fake \
+            -e INPUT_CLIENTSECRET=fake \
+            -e INPUT_SCRIPTID=new-id \
+            -e INPUT_COMMAND=pull \
+            clasp-action:test -c '
+              echo "{\"scriptId\": \"preserved-id\"}" > .clasp.json
+              /entrypoint.sh || true
+              if ! grep -q "preserved-id" .clasp.json; then
+                echo "Failed to restore existing .clasp.json." >&2
+                exit 1
+              fi
+            '
