@@ -1,7 +1,7 @@
 {
   "name": "clasp-action",
-  "version": "1.2.2",
-  "description": "Push or deploy to Google Apps Script using clasp",
+  "version": "2.0.0",
+  "description": "Push, pull, or deploy to Google Apps Script using clasp",
   "private": true,
   "dependencies": {
     "@google/clasp": "3.4.1"
