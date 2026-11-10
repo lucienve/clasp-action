@@ -5,6 +5,38 @@ or pull Apps Script projects.
 
 ## Architectural Decisions
 
+### Upstream Pull Request Branches (November 2026)
+
+This repository maintains two active pull request branches targeting the
+upstream repository
+([`daikikatsuragawa/clasp-action`](https://github.com/daikikatsuragawa/clasp-action)
+at commit `861a874` / `v1.2.0`):
+
+1. **`patch-1` (Upstream PR #13)**:
+   - **Purpose**: Documentation fix for upstream `v1.2.0`. Updates all 6
+     workflow examples in `README.md` to reference
+     `daikikatsuragawa/clasp-action@v1.2.0` instead of `@v1.1.0` (which threw
+     errors for users attempting to use `pull`), adds `pull` to the action's
+     overview description and `command` input documentation, and standardizes
+     prose formatting to 80 characters.
+   - **Ancestry**: Based directly on `861a874` (`v1.2.0`).
+2. **`modernize-action` (Upstream PR #14)**:
+   - **Purpose**: Comprehensive v2 modernization for upstream clasp-action.
+     Upgrades the runtime to `@google/clasp@3.4.1` on `node:26-alpine`,
+     transitions authentication to Clasp v3's native `tokens.default` OAuth2
+     schema via `refreshToken`, `clientId`, and `clientSecret` (eliminating
+     legacy `accessToken` and `idToken`), hardens `entrypoint.sh` with fail-fast
+     validation, zero-argv credential ingestion via `jq -n`, scoped `umask 077`,
+     POSIX trap cleanups, non-destructive `.clasp.json` preservation, and adds
+     `.github/workflows/ci.yml`, `.github/dependabot.yml`, Prettier,
+     markdownlint, and `docs/setup-credentials.md`.
+   - **Marketplace & Scope Continuity**: Retains `name: 'Clasp Action'` in
+     `action.yml` for upstream marketplace compatibility, omits fork-only
+     sections and machine-local rules, and references
+     `daikikatsuragawa/clasp-action@v2.0.0` in workflow examples.
+   - **Mergeability**: Merges cleanly (3-way merge exit code 0) against both
+     upstream `861a874` and `patch-1`.
+
 ### Release v2.0.0 Architecture & Security Hardening (November 2026)
 
 - **Native Clasp v3 Credential Schema**: Removed legacy `accessToken` and
